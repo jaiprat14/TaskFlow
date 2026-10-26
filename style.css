@@ -1,51 +1,165 @@
-
+/* 1. Make sizing easier to control */
 * {
     box-sizing: border-box;
 }
 
+/* 2. Style the entire page */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #f3f4f6;
-    color: #1f2937;
+    background: #f5f7fc;
+    color: #1e293b;
+    min-height: 100vh;
 }
 
+/* 3. Main application container */
 .container {
     width: 90%;
-    max-width: 600px;
-    margin: 60px auto;
-    padding: 24px;
-    background: white;
-    border-radius: 12px;
+    max-width: 650px;
+    margin: 70px auto;
+    padding: 32px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
 }
 
+/* 4. Main heading */
 h1 {
-    margin-bottom: 8px;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
 }
 
+/* 5. Subtitle */
+.container > p {
+    margin-top: 10px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* 6. Input form */
 #task-form {
     display: flex;
-    gap: 10px;
-    margin-top: 24px;
+    flex-direction: row;
+    gap: 12px;
+    margin-top: 28px;
 }
 
+/* 7. Task input */
 #task-input {
     flex: 1;
     min-width: 0;
-    padding: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 1px solid #dbe2ea;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* 8. Highlight the input when selected */
+#task-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* 9. Buttons */
 button {
-    padding: 12px 16px;
+    padding: 13px 18px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
 }
 
+/* 10. Button hover effect */
+button:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+}
+
+/* 11. Task list */
 #task-list {
-    padding-left: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
 }
 
+/* 12. Individual task */
 #task-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-top: 12px;
+    padding: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+}
+
+#task-list li span {
+    flex: 1;
+    min-width: 0;
+}
+
+#task-list li button {
+    flex-shrink: 0;
+    background: #ef4444;
+}
+
+#task-list li button:hover {
+    background: #dc2626;
+}
+
+
+/* 13. Task counter */
+#task-count {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* 14. Adjust the layout for smaller screens */
+@media (max-width: 480px) {
+    .container {
+        width: 94%;
+        margin: 24px auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 26px;
+        letter-spacing: -0.5px;
+    }
+
+    #task-form {
+        flex-direction: column;
+    }
+
+    #task-form button {
+        width: 100%;
+    }
+
+    #task-list li {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    #task-list li button {
+        padding: 10px 12px;
+    }
+}
+
+/* Style completed tasks */
+.completed {
+    text-decoration: line-through;
+    color: #94a3b8;
 }

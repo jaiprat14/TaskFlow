@@ -5,6 +5,17 @@ const TaskCount = document.getElementById("task-count");
 
 let tasks = [];
 
+
+function updateTaskCount() {
+    const remainingTasks = tasks.filter(function (task) {
+        return !task.completed;
+    }).length;
+
+    TaskCount.textContent =
+        remainingTasks +
+        (remainingTasks === 1 ? " task remaining" : " tasks remaining");
+}
+
 TaskForm.addEventListener("submit", function(e){
     e.preventDefault();
 
@@ -13,15 +24,54 @@ TaskForm.addEventListener("submit", function(e){
         return;
     }
     
-    tasks.push(TaskName);
+    const task = {
+    name: TaskName,
+    completed: false
+};
 
-    const TaskItem = document.createElement("li");
-    TaskItem.textContent = TaskName;
+    tasks.push(task);
 
-    TaskList.appendChild(TaskItem);
+    const taskItem = document.createElement("li");
 
-    TaskInput.value = "";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
 
-    TaskCount.textContent = tasks.length + 
-    (tasks.length === 1 ? "Task Added" : "Tasks Added");
+
+    const taskText = document.createElement("span");
+    taskText.textContent = TaskName;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", function () {
+    taskItem.remove();
+
+    tasks = tasks.filter(function (item) {
+        return item !== task;
+    });
+
+    updateTaskCount();
+});
+
+
+    checkbox.addEventListener("change", function () {
+    task.completed = checkbox.checked;
+
+    if (task.completed) {
+        taskText.classList.add("completed");
+    } else {
+        taskText.classList.remove("completed");
+    }
+
+    updateTaskCount();
+});
+
+taskItem.appendChild(checkbox);
+taskItem.appendChild(taskText);
+taskItem.appendChild(deleteButton);
+
+TaskList.appendChild(taskItem);
+
+TaskInput.value = "";
+updateTaskCount();
 });
