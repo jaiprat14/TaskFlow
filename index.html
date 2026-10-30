@@ -18,6 +18,15 @@
                 required>
                 <button type="submit">Add Task</button>
             </form>
+
+            <div id="task-filters">
+                <label for="task-filter">Show:</label>
+                <select id="task-filter">
+                  <option value="all">All Tasks</option>
+                  <option value="active">Active Tasks</option>
+                  <option value="completed">Completed Tasks</option>
+                </select>
+            </div>
             
             <ul id="task-list"></ul>
             <p id="task-count">0 tasks pending</p>
