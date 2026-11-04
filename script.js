@@ -3,6 +3,7 @@ const TaskInput = document.getElementById("task-input");
 const TaskList = document.getElementById('task-list');
 const TaskCount = document.getElementById("task-count");
 const searchInput = document.getElementById("search-input");
+const dueDateInput = document.getElementById("due-date");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -33,6 +34,32 @@ function renderTask(task) {
     const taskText = document.createElement("span");
     taskText.textContent = task.name;
     taskText.classList.add("task-text");
+
+    const dueDateText = document.createElement("span");
+    dueDateText.classList.add("due-date");
+
+
+    if (task.dueDate) {
+    const dueDate = new Date(task.dueDate + "T00:00:00");
+
+    const formattedDate = dueDate.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+
+    dueDateText.textContent = "Due: " + formattedDate;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (dueDate < today && !task.completed) {
+        dueDateText.classList.add("overdue");
+        dueDateText.textContent = "Overdue: " + formattedDate;
+    } 
+    }else {
+        dueDateText.textContent = "no due date";
+    }
 
     if (task.completed) {
         taskText.classList.add("completed");
@@ -120,6 +147,7 @@ function renderTask(task) {
 
     taskItem.appendChild(checkbox);
     taskItem.appendChild(taskText);
+    taskItem.appendChild(dueDateText);
     taskItem.appendChild(prioritySelect);
     taskItem.appendChild(editButton);
     taskItem.appendChild(deleteButton);
@@ -139,7 +167,8 @@ TaskForm.addEventListener("submit", function(e){
     const task = {
     name: TaskName,
     completed: false,
-    priority: "medium"
+    priority: "medium",
+    dueDate: dueDateInput.value
 };
 
     tasks.push(task);
