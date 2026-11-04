@@ -37,6 +37,31 @@ function renderTask(task) {
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
+    deleteButton.classList.add("delete-btn");
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "edit";
+    editButton.classList.add("edit-btn");
+
+    editButton.addEventListener("click", function () {
+    const newTaskName = prompt("Edit your task:", task.name);
+
+    if (newTaskName === null) {
+        return;
+    }
+
+    const updatedName = newTaskName.trim();
+
+    if (updatedName === "") {
+        alert("Task name cannot be empty!");
+        return;
+    }
+
+    task.name = updatedName;
+
+    saveTasks();
+    renderTasks();
+});
 
     checkbox.addEventListener("change", function () {
         task.completed = checkbox.checked;
@@ -67,6 +92,7 @@ function renderTask(task) {
     taskItem.appendChild(checkbox);
     taskItem.appendChild(taskText);
     taskItem.appendChild(deleteButton);
+    taskItem.appendChild(editButton);
 
     TaskList.appendChild(taskItem);
 }
