@@ -107,7 +107,7 @@ button:active{
     overflow-wrap: anywhere;
 }
 
-#task-list li span {
+#task-list li .task-text {
     flex: 1;
     min-width: 0;
 }

@@ -32,6 +32,7 @@ function renderTask(task) {
 
     const taskText = document.createElement("span");
     taskText.textContent = task.name;
+    taskText.classList.add("task-text");
 
     if (task.completed) {
         taskText.classList.add("completed");
@@ -40,6 +41,32 @@ function renderTask(task) {
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.classList.add("delete-btn");
+
+    const prioritySelect = document.createElement("select");
+    prioritySelect.classList.add("priority-select");
+
+    const priorityBadge = document.createElement("span");
+    priorityBadge.classList.add("priority-badge");
+
+    const priorities = ["Low", "Medium", "High"];
+
+    priorities.forEach(function (priority) {
+        const option = document.createElement("option");
+
+        option.value = priority.toLowerCase()
+        option.textContent = priority
+
+        prioritySelect.appendChild(option);
+    });
+
+    prioritySelect.value = task.priority || "medium";
+
+    prioritySelect.addEventListener("change", function(){
+        task.priority = prioritySelect.value;
+        
+        saveTasks();
+        renderTasks();
+    });
 
     const editButton = document.createElement("button");
     editButton.textContent = "edit";
@@ -93,8 +120,10 @@ function renderTask(task) {
 
     taskItem.appendChild(checkbox);
     taskItem.appendChild(taskText);
-    taskItem.appendChild(deleteButton);
+    taskItem.appendChild(prioritySelect);
     taskItem.appendChild(editButton);
+    taskItem.appendChild(deleteButton);
+    
 
     TaskList.appendChild(taskItem);
 }
@@ -109,7 +138,8 @@ TaskForm.addEventListener("submit", function(e){
     
     const task = {
     name: TaskName,
-    completed: false
+    completed: false,
+    priority: "medium"
 };
 
     tasks.push(task);
@@ -133,7 +163,8 @@ function renderTasks() {
       const matchesFilter =
         currentFilter === "all" ||
         (currentFilter === "active" && !task.completed) ||
-        (currentFilter === "completed" && task.completed);
+        (currentFilter === "completed" && task.completed) || 
+        (task.priority || "medium") === currentFilter;
 
       const matchesSearch =
         task.name.toLowerCase().includes(searchQuery.toLowerCase());
