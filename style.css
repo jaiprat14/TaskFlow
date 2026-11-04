@@ -228,3 +228,23 @@ button:active{
 .task-list button:active {
     transform: scale(0.96);
 }
+
+#task-search {
+    margin: 15px 0;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s
+}
+
+#search-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}

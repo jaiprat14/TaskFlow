@@ -2,10 +2,12 @@ const TaskForm = document.getElementById("task-form");
 const TaskInput = document.getElementById("task-input");
 const TaskList = document.getElementById('task-list');
 const TaskCount = document.getElementById("task-count");
+const searchInput = document.getElementById("search-input");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 let currentFilter = localStorage.getItem("currentFilter") || "all";
+let searchQuery = "";
 
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -128,20 +130,21 @@ function renderTasks() {
     TaskList.innerHTML = "";
 
     let filteredTasks = tasks.filter(function (task) {
-        if (currentFilter === "active") {
-            return !task.completed;
-        }
+      const matchesFilter =
+        currentFilter === "all" ||
+        (currentFilter === "active" && !task.completed) ||
+        (currentFilter === "completed" && task.completed);
 
-        if (currentFilter === "completed") {
-            return task.completed;
-        }
+      const matchesSearch =
+        task.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-        return true;
+      return matchesFilter && matchesSearch;
     });
 
     filteredTasks.forEach(function (task) {
         renderTask(task);
     });
+
 }
 
 const taskFilter = document.getElementById("task-filter");
@@ -150,6 +153,11 @@ taskFilter.value = currentFilter;
 taskFilter.addEventListener("change", function () {
     currentFilter = taskFilter.value;
     localStorage.setItem("currentFilter", currentFilter);
+    renderTasks();
+});
+
+searchInput.addEventListener("input", function(){
+    searchQuery = searchInput.value;
     renderTasks();
 });
 
