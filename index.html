@@ -17,13 +17,20 @@
                 placeholder="whats the plan for today"
                 required>
 
-                <input type="date" id="due-date">
+                <div class="date-picker-wrapper">
+                  <button type="button" id="date-picker-button">
+                    <span id="date-display">Select due date</span>
+                    <span>📅</span>
+                  </button>
+
+                  <input type="date" id="due-date">
+                </div>
 
                 <button type="submit">Add Task</button>
             </form>
 
             <div id="task-filters">
-                <label for="task-filter">Show:</label>
+                <label for="task-filter">Filter:</label>
                 <select id="task-filter">
                   <option value="all">All Tasks</option>
                   <option value="active">Active Tasks</option>
@@ -32,6 +39,14 @@
                   <option value="medium">Medium Priority Tasks</option>
                   <option value="low">Low Priority Tasks</option>
                 </select>
+
+                <label for="sort-tasks">Sort by:</label>
+                <select id="sort-tasks">
+                  <option value="default">Default</option>
+                  <option value="earliest">Due date: Earliest first</option>
+                  <option value="latest">Due date: Latest first</option>
+                </select>
+
             </div>
 
             <div id="task-search">
@@ -43,6 +58,7 @@
             </div>
             
             <ul id="task-list" class="task-list"></ul>
+            <p id="empty-message"></p>
             <p id="task-count">0 tasks pending</p>
         </main>
             

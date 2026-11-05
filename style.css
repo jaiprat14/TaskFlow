@@ -20,8 +20,17 @@ body {
     padding: 32px;
     background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
 }
+
+.container {
+    transition: box-shadow 0.25s ease;
+}
+
+.container:hover {
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.10);
+}
+
 
 /* 4. Main heading */
 h1 {
@@ -29,13 +38,17 @@ h1 {
     font-size: 32px;
     font-weight: 700;
     letter-spacing: -1px;
+    color:#1e293b;
+    line-height: 1.2;
 }
 
 /* 5. Subtitle */
 .container > p {
     margin-top: 10px;
+    margin-bottom: 0;
     color: #64748b;
     line-height: 1.6;
+    font-size: 14px;
 }
 
 /* 6. Input form */
@@ -45,6 +58,33 @@ h1 {
     gap: 12px;
     margin-top: 28px;
 }
+
+#task-input:focus,
+#search-input:focus,
+#task-filter:focus,
+#sort-tasks:focus,
+.priority-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    outline: none;
+}
+
+
+#task-input,
+#search-input,
+#task-filter,
+.priority-select {
+    font-family: inherit;
+    color: #334155;
+}
+
+#task-input::placeholder,
+#search-input::placeholder {
+    color: #94a3b8;
+}
+
+
+
 
 /* 7. Task input */
 #task-input {
@@ -74,7 +114,8 @@ button {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
 }
 
 /* 10. Button hover effect */
@@ -99,17 +140,41 @@ button:active{
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-top: 12px;
-    padding: 16px;
-    background: #f8fafc;
+    flex-wrap: wrap;
+    padding: 18px;
+    margin-bottom: 12px;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    overflow-wrap: anywhere;
+    border-radius: 12px;
+    background-color: #f8fafc;
 }
 
-#task-list li .task-text {
-    flex: 1;
+.task-checkbox {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    accent-color: #4f46e5;
+    cursor: pointer;
+}
+
+.task-text {
+    flex: 1 1 150px;
     min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.due-date {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.due-date.overdue {
+    color: #dc2626;
+    font-weight: 500;
 }
 
 #task-list li button {
@@ -128,7 +193,8 @@ button:active{
     padding-top: 16px;
     border-top: 1px solid #e2e8f0;
     color: #64748b;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
 }
 
 @media (max-width: 480px) {
@@ -165,6 +231,7 @@ button:active{
 .completed {
     text-decoration: line-through;
     color: #94a3b8;
+    opacity: 0.75;
 }
 
 #task-filters {
@@ -175,12 +242,12 @@ button:active{
     color: #64748b;
 }
 
-#task-filters label {
+#task-filters label, #sort-tasks label {
     font-size: 14px;
     font-weight: 600;
 }
 
-#task-filter {
+#task-filter, #sort-tasks {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -190,7 +257,7 @@ button:active{
     outline: none;
 }
 
-#task-filter:focus {
+#task-filter:focus, #sort-tasks:focus {
     border-color: #4a90e2;
 }
 
@@ -224,6 +291,12 @@ button:active{
     background-color: #8e0000;
 }
 
+#task-list li button.edit-btn,
+#task-list li button.delete-btn {
+    transition: background-color 0.1s ease,
+                transform 0.1s ease;
+}
+
 /* Click animation */
 .task-list button:active {
     transform: scale(0.96);
@@ -249,13 +322,152 @@ button:active{
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
-.due-date {
-    font-size: 12px;
-    color: #64748b;
-    white-space: nowrap;
+.date-picker-wrapper {
+    position: relative;
+    width: 155px;
+    height: 42px;
 }
 
-.due-date.overdue {
-    color: #dc2626;
+#date-picker-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: white;
+    color: #64748b;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.date-picker-wrapper:hover #date-picker-button {
+    border-color: #94a3b8;
+    background-color: #f8fafc;
+}
+
+.date-picker-wrapper:focus-within #date-picker-button {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+#due-date {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+.priority-select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 8px 25px 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: white;
+    color: #334155;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 600;
+    cursor: pointer;
+    outline: none;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.priority-select:hover {
+    border-color: #94a3b8;
+}
+
+.priority-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+@media (max-width: 480px) {
+    .task-actions {
+        grid-column: 2;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .task-actions button {
+        width: auto;
+    }
+}
+
+/* Hover effects for input fields and dropdowns */
+#task-input:hover,
+#search-input:hover,
+#task-filter:hover,
+#sort-tasks:hover,
+.priority-select:hover {
+    border-color: #94a3b8;
+}
+
+/* Hover effect for date picker */
+.date-picker-wrapper:hover #date-picker-button {
+    border-color: #94a3b8;
+    background-color: #f8fafc;
+}
+
+/* Hover effect for task list items */
+#task-list li {
+    transition: border-color 0.2s, box-shadow 0.2s,
+                background-color 0.2s, transform 0.2s;
+}
+
+#task-list li:hover {
+    border-color: #cbd5e1;
+    background-color: #f1f5f9;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    transform: translateY(-2px);
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.3);
+    outline-offset: 3px;
+}
+
+#empty-message {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    line-height:1.6;
+    padding: 24px 12px;
+    margin: 0;
+    display: none;
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

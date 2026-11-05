@@ -4,11 +4,39 @@ const TaskList = document.getElementById('task-list');
 const TaskCount = document.getElementById("task-count");
 const searchInput = document.getElementById("search-input");
 const dueDateInput = document.getElementById("due-date");
+const dateDisplay = document.getElementById("date-display");
+const taskFilter = document.getElementById("task-filter");
+const emptyMessage =document.getElementById("empty-message");
+
+const sortTasks = document.getElementById("sort-tasks");
+
+dueDateInput.addEventListener("change", function () {
+    if (!dueDateInput.value) {
+        dateDisplay.textContent = "Select due date";
+        return;
+    }
+
+    const selectedDate = new Date(dueDateInput.value + "T00:00:00");
+
+    dateDisplay.textContent = selectedDate.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+});
+
+dueDateInput.addEventListener("click", function () {
+
+    if (dueDateInput.showPicker) {
+        dueDateInput.showPicker();
+    }
+});
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 let currentFilter = localStorage.getItem("currentFilter") || "all";
 let searchQuery = "";
+let currentSort = localStorage.getItem("currentSort") || "default";
 
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -26,8 +54,10 @@ function updateTaskCount() {
 
 function renderTask(task) {
     const taskItem = document.createElement("li");
+    taskItem.classList.add("task-item");
 
     const checkbox = document.createElement("input");
+    checkbox.classList.add("task-checkbox");
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
 
@@ -72,9 +102,6 @@ function renderTask(task) {
     const prioritySelect = document.createElement("select");
     prioritySelect.classList.add("priority-select");
 
-    const priorityBadge = document.createElement("span");
-    priorityBadge.classList.add("priority-badge");
-
     const priorities = ["Low", "Medium", "High"];
 
     priorities.forEach(function (priority) {
@@ -98,6 +125,13 @@ function renderTask(task) {
     const editButton = document.createElement("button");
     editButton.textContent = "edit";
     editButton.classList.add("edit-btn");
+
+    const taskActions = document.createElement("div");
+    taskActions.classList.add("task-actions");
+
+    taskActions.appendChild(prioritySelect);
+    taskActions.appendChild(editButton);
+    taskActions.appendChild(deleteButton);
 
     editButton.addEventListener("click", function () {
     const newTaskName = prompt("Edit your task:", task.name);
@@ -135,22 +169,20 @@ function renderTask(task) {
     });
 
     deleteButton.addEventListener("click", function () {
-        taskItem.remove();
 
         tasks = tasks.filter(function (item) {
             return item !== task;
         });
 
         saveTasks();
+        renderTasks();
         updateTaskCount();
     });
 
     taskItem.appendChild(checkbox);
     taskItem.appendChild(taskText);
     taskItem.appendChild(dueDateText);
-    taskItem.appendChild(prioritySelect);
-    taskItem.appendChild(editButton);
-    taskItem.appendChild(deleteButton);
+    taskItem.appendChild(taskActions);
     
 
     TaskList.appendChild(taskItem);
@@ -175,9 +207,12 @@ TaskForm.addEventListener("submit", function(e){
 
     saveTasks();
 
-    renderTasks(task);
+    renderTasks();
 
     TaskInput.value = "";
+
+    dueDateInput.value = "";
+    dateDisplay.textContent = "Select due date";
 
     updateTaskCount();
 
@@ -187,6 +222,7 @@ TaskForm.addEventListener("submit", function(e){
 
 function renderTasks() {
     TaskList.innerHTML = "";
+    emptyMessage.style.display = "none";
 
     let filteredTasks = tasks.filter(function (task) {
       const matchesFilter =
@@ -201,14 +237,38 @@ function renderTasks() {
       return matchesFilter && matchesSearch;
     });
 
+    if (currentSort === "earliest") {
+        filteredTasks.sort(function (a, b) {
+            if (!a.dueDate && !b.dueDate) return 0;
+            if (!a.dueDate) return 1;
+            if (!b.dueDate) return -1;
+
+          return a.dueDate.localeCompare(b.dueDate);
+        });
+    }
+    else if (currentSort === "latest") {
+        filteredTasks.sort(function (a, b) {
+          if (!a.dueDate && !b.dueDate) return 0;
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+
+          return b.dueDate.localeCompare(a.dueDate);
+        });
+    }
+
+    if(filteredTasks.length === 0){
+        emptyMessage.textContent = tasks.length === 0 
+        ? "You're all caught up! Add a task to get started."
+        : "No tasks found. Try changing your search or filter.";
+        
+        emptyMessage.style.display = "block";
+    }
+
     filteredTasks.forEach(function (task) {
         renderTask(task);
     });
 
 }
-
-const taskFilter = document.getElementById("task-filter");
-taskFilter.value = currentFilter;
 
 taskFilter.addEventListener("change", function () {
     currentFilter = taskFilter.value;
@@ -221,6 +281,14 @@ searchInput.addEventListener("input", function(){
     renderTasks();
 });
 
+sortTasks.addEventListener("change", function () {
+    currentSort = sortTasks.value;
+    localStorage.setItem("currentSort", currentSort);
+    renderTasks();
+});
+
+taskFilter.value = currentFilter;
+sortTasks.value = currentSort;
 
 renderTasks();
 updateTaskCount();
